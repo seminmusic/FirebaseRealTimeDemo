@@ -1,0 +1,66 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="jumbotron"></div>
+
+<div>
+    Ime: <input id="ime" />
+    <button type="button" id="posalji">Pošalji</button>
+</div>
+
+
+
+@section scripts {
+
+<script src="https://www.gstatic.com/firebasejs/3.6.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/3.6.1/firebase-database.js"></script>
+
+<script>
+    $(function () {
+
+        //var firebase = new Firebase("https://fir-realtimedemo-50903.firebaseio.com/");
+
+        //firebase.on("value", function (snapshot) {
+        //    $(".jumbotron").empty();
+        //    var data = snapshot.val();
+        //    data.podaci.forEach(function (podatak) {
+        //        $(".jumbotron").append("<div style='font-size:16px; color:red'>" + podatak.ime + "</div>");
+        //    });
+        //});
+
+        //$("#posalji").click(function () {
+        //    var ime = $("#ime").val();
+        //    if (ime.trim()) {
+        //        firebase.database().ref("podaci").set({ ime: ime });
+        //    }
+        //});
+
+        var config = {
+            databaseURL: "https://fir-realtimedemo-50903.firebaseio.com/"
+        };
+        firebase.initializeApp(config);
+
+        var rootRef = firebase.database().ref();
+        rootRef.on("value", function (snapshot) {
+            $(".jumbotron").empty();
+            var data = snapshot.val();
+            var niz = $.map(data.podaci, function (value, index) {
+                return value;
+            });
+            niz.forEach(function (podatak) {
+                $(".jumbotron").append("<div style='font-size:16px; color:red'>" + podatak.ime + "</div>");
+            });
+        });
+
+        $("#posalji").click(function () {
+            var ime = $("#ime").val();
+            if (ime.trim()) {
+                rootRef.child("podaci").push({ ime: ime });
+            }
+        });
+
+    });
+</script>
+
+}
